@@ -1,6 +1,6 @@
 const {DataTypes} = require('sequelize')
-module.exports = (sequelize) =>{
-    const Financeiro = sequelize.define('Financeiro', {
+module.exports = (conexaoBanco) =>{
+    const Financeiro = conexaoBanco.define('Financeiro', {
         data: DataTypes.DATE,
         descricao: DataTypes.STRING,
         formaPagamento: DataTypes.STRING,

@@ -1,4 +1,3 @@
-const { Sequelize } = require('sequelize')
-const sequelize = require('../config/database')
-const Financeiro = require('./financeiro')(sequelize)
-module.exports = {sequelize, Financeiro}
+const conexaoBanco = require('../config/database')
+const Financeiro = require('./financeiro')(conexaoBanco)
+module.exports = {conexaoBanco, Financeiro}
