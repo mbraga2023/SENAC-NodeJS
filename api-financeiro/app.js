@@ -2,12 +2,14 @@ require('dotenv').config()
 const express = require('express')
 const { conexaoBanco } = require('./models')
 const financeiroRoutes = require('./routes/financeiroRoutes')
+const authRoutes = require('./routes/authRoutes')
 const PORT = '3000'
 
 const app = express()
 app.use(express.json())
 
 app.use('/financeiro', financeiroRoutes)
+app.use('/auth', authRoutes)
 
 conexaoBanco.sync().then(() => {
     app.listen(PORT, () => {
