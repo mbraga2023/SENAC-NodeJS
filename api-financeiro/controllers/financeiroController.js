@@ -3,34 +3,56 @@ const normalizeFields = require('../utils/normalizeFields'); // <-- new helper
 
 
 exports.listar = async (req, res) => {
+  const usuarioIdRecuperado = req.usuarioId; // ID from JWT token
+  console.log("🔥 Listing records for usuarioId:", usuarioIdRecuperado);
+
   try {
-    const resultado = await Financeiro.findAll();
+    const resultado = await Financeiro.findAll({
+      where: {
+        usuarioid: usuarioIdRecuperado // match DB column name
+      }
+    });
+
     res.json(resultado);
+
   } catch (error) {
+    console.error("❌ Erro ao listar registros:", error);
     res.status(500).json({ erro: `Erro ao listar registros: ${error}` });
   }
 };
 
-exports.criar = async (req, res) => {
-  try {
-    normalizeFields(req.body); // <--- centralized normalization
 
-    const registro = await Financeiro.create(req.body);
+exports.criar = async (req, res) => {
+  const usuarioIdRecuperado = req.usuarioId;
+
+  console.log("🔥 authMiddleware captured usuarioId:", usuarioIdRecuperado);
+  console.log("📦 req.body received:", req.body);
+
+  try {
+    const dados = {
+      ...req.body,
+      usuarioid: usuarioIdRecuperado  
+    };
+
+    const registro = await Financeiro.create(dados);
+
     res.status(201).json(registro);
 
-  } catch (listaDeErros) {
+  } catch (error) {
+    console.error("❌ Erro ao criar registro:", error);
 
-    if (listaDeErros.name === 'SequelizeValidationError') {
+    if (error.name === 'SequelizeValidationError') {
       return res.status(400).json({
-        Inconsistencias: listaDeErros.errors.map(e => e.message)
+        Inconsistencias: error.errors.map(e => e.message)
       });
     }
 
     res.status(500).json({
-      erro: `Erro ao criar registro: ${listaDeErros}`
+      erro: `Erro ao criar registro: ${error}`
     });
   }
 };
+
 
 exports.alterar = async (req, res) => {
   const { id } = req.params;

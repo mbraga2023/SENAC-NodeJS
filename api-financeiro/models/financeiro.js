@@ -90,7 +90,8 @@ module.exports = (conexaoBanco) => {
                     msg: "O tipo deve ser 'entrada' ou 'saida'"
                 }
             }
-        }
+        },
+        
 
     }, {
         tableName: 'financeiro',

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Usuario } = require('../models') //models/index.js
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -27,8 +28,11 @@ async function login(req, res) {
   if(!usuario || !(await bcrypt.compare(senha, usuario.senha))){
     return res.status(401).json({erro: "Credenciais inválidas"})
   }
-  const token  = jwt.sign({id:usuario.id}, process.env.JWT_SECRET)
-
+  const token = jwt.sign(
+    { id: usuario.id },
+    process.env.JWT_SECRET,
+    { expiresIn: '50m' }
+  );
     res.json({token});
 }
 
