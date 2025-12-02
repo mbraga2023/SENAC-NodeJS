@@ -50,12 +50,12 @@ module.exports = (conexaoBanco) => {
         // ============================
         formaPagamento: {
             type: DataTypes.STRING,
-            allowNull: false,            
+            allowNull: false,
             validate: {
                 notNull: { msg: "A forma de pagamento é obrigatória" },
                 notEmpty: { msg: "A forma de pagamento não pode ser vazia" },
                 isIn: {
-                    args:[["pix", "dinheiro", "crédito", "débito", "boleto"]],
+                    args: [["pix", "dinheiro", "crédito", "débito", "boleto"]],
                     msg: "Forma de pagamento inválida"
                 }
             }
@@ -90,8 +90,12 @@ module.exports = (conexaoBanco) => {
                     msg: "O tipo deve ser 'entrada' ou 'saida'"
                 }
             }
-        },
-        
+        }, categoriaid: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        }
+
+
 
     }, {
         tableName: 'financeiro',

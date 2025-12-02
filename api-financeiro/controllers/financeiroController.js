@@ -1,32 +1,36 @@
 const { Financeiro } = require('../models') //models/index.js
-const normalizeFields = require('../utils/normalizeFields'); // <-- new helper
-
+const { Categoria } = require('../models') //models/index.js
+const normalizeFields = require('../utils/normalizeFields'); 
 
 exports.listar = async (req, res) => {
-  const usuarioIdRecuperado = req.usuarioId; // ID from JWT token
-  console.log("🔥 Listing records for usuarioId:", usuarioIdRecuperado);
+  const usuarioIdRecuperado = req.usuarioId;
 
   try {
     const resultado = await Financeiro.findAll({
       where: {
-        usuarioid: usuarioIdRecuperado // match DB column name
-      }
+        usuarioid: usuarioIdRecuperado
+      },
+      include: [
+  {
+    model: Categoria,
+    as: "categoria",
+    attributes: ["id", "tituloCategoria", "descricaoCategoria"]
+  }
+]
+
     });
 
     res.json(resultado);
 
   } catch (error) {
-    console.error("❌ Erro ao listar registros:", error);
     res.status(500).json({ erro: `Erro ao listar registros: ${error}` });
   }
 };
 
 
+
 exports.criar = async (req, res) => {
   const usuarioIdRecuperado = req.usuarioId;
-
-  console.log("🔥 authMiddleware captured usuarioId:", usuarioIdRecuperado);
-  console.log("📦 req.body received:", req.body);
 
   try {
     const dados = {
@@ -39,8 +43,6 @@ exports.criar = async (req, res) => {
     res.status(201).json(registro);
 
   } catch (error) {
-    console.error("❌ Erro ao criar registro:", error);
-
     if (error.name === 'SequelizeValidationError') {
       return res.status(400).json({
         Inconsistencias: error.errors.map(e => e.message)
